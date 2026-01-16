@@ -1,40 +1,48 @@
-  local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "🔵 baolq211 hub | Blox Fruit", HidePremium = false, SaveConfig = true, ConfigFolder = "baolq211"})
+  local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("🔵 baolq211 hub | Blox Fruit", "Aqua")
 
 -- TAB FARM CHÍNH
-local FarmTab = Window:MakeTab({Name = "🌾 Farm", Icon = "rbxassetid://4483362458", Premium = false})
+local FarmTab = Window:NewTab("🌾 Farm")
+local FarmSection = FarmTab:NewSection("Cày Cấp Tự Động")
 
-FarmTab:AddToggle({Name = "Auto Farm Level", Default = false, Callback = function(v) _G.FarmLevel = v end})
-FarmTab:AddToggle({Name = "Auto Farm Bone (Xương)", Default = false, Callback = function(v) _G.FarmBone = v end})
-FarmTab:AddToggle({Name = "Auto Katakuri", Default = false, Callback = function(v) _G.FarmKatakuri = v end})
-FarmTab:AddToggle({Name = "Auto Farm Thông thạo (Mastery)", Default = false, Callback = function(v) _G.FarmMastery = v end})
+FarmSection:NewToggle("Auto Farm Level", "Bật để tự đánh quái", function(state)
+    _G.AutoFarm = state
+    spawn(function()
+        while _G.AutoFarm do
+            task.wait()
+            pcall(function()
+                -- Ở đây sẽ là code logic nhận nhiệm vụ và bay tới quái
+                -- Mình để dòng print để bạn kiểm tra trong F9
+                print("baolq211 hub đang tìm quái phù hợp level...")
+            end)
+        end
+    end)
+end)
 
--- TAB FARM OTHER
-local FarmOtherTab = Window:MakeTab({Name = "📦 Farm Other", Icon = "rbxassetid://4483362458", Premium = false})
+FarmSection:NewToggle("Auto Farm Bone (Xương)", "Dành cho Sea 3", function(state)
+    _G.AutoBone = state
+end)
 
-FarmOtherTab:AddToggle({Name = "Auto Farm Chest (Rương)", Default = false, Callback = function(v) _G.FarmChest = v end})
-FarmOtherTab:AddToggle({Name = "Auto Fishing (Câu cá)", Default = false, Callback = function(v) _G.AutoFishing = v end})
+-- TAB FRUIT
+local FruitTab = Window:NewTab("🍎 Fruit")
+local FruitSection = FruitTab:NewSection("Trái Ác Quỷ")
 
--- TAB TRÁI ÁC QUỶ (FRUIT)
-local FruitTab = Window:MakeTab({Name = "🍎 Fruit", Icon = "rbxassetid://4483362458", Premium = false})
+FruitSection:NewButton("Random Fruit", "Mua trái ngẫu nhiên", function()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Cousin","Buy")
+end)
 
-FruitTab:AddLabel("--- Trái Đang Bán (Stock) ---")
-FruitTab:AddButton({Name = "Hiển thị Stock Trái", Callback = function() print("Đang kiểm tra Stock...") end})
-FruitTab:AddToggle({Name = "Tween tới Trái (Gom trái)", Default = false, Callback = function(v) _G.TweenFruit = v end})
-FruitTab:AddButton({Name = "Random Trái", Callback = function() print("Đang Random...") end})
-FruitTab:AddButton({Name = "Thả Trái (Drop)", Callback = function() print("Đã thả trái!") end})
-FruitTab:AddButton({Name = "Lưu trữ Trái (Store)", Callback = function() print("Đã lưu trữ!") end})
+FruitSection:NewButton("Lưu trữ Trái (Store)", "Cất trái vào rương", function()
+    for _,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if v:IsA("Tool") and v:FindFirstChild("Fruit") then
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", v.Name, v)
+        end
+    end
+end)
 
 -- TAB DISCORD
-local DiscordTab = Window:MakeTab({Name = "💬 Discord", Icon = "rbxassetid://4483362458", Premium = false})
+local DiscordTab = Window:NewTab("💬 Discord")
+local DiscordSection = DiscordTab:NewSection("Hỗ trợ: https://discord.gg/37WE8TBTY")
 
-DiscordTab:AddLabel("Tham gia cộng đồng của chúng tôi")
-DiscordTab:AddButton({
-    Name = "Copy Link Discord",
-    Callback = function()
-        setclipboard("https://discord.gg/37WE8TBTY")
-        OrionLib:MakeNotification({Name = "Thông báo", Content = "Đã copy link Discord!", Time = 5})
-    end
-})
-
-OrionLib:Init()
+DiscordSection:NewButton("Copy Link Discord", "Bấm để copy", function()
+    setclipboard("https://discord.gg/37WE8TBTY")
+end)
